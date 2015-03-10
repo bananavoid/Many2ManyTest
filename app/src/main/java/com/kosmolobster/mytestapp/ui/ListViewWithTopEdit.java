@@ -32,8 +32,7 @@ public class ListViewWithTopEdit extends LinearLayout {
     EditText addEdit;
     List<String> listData;
     ArrayAdapter regAdapter;
-    SimpleArrayAdapter arrayAdapter;
-    //OnListEditViewListener eventListener;
+    OnListEditViewListener eventListener;
     LinearLayout addLayout;
 
     public ListViewWithTopEdit(Context context) {
@@ -68,23 +67,22 @@ public class ListViewWithTopEdit extends LinearLayout {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
-//    private void doAdd() {
-//        if (addEdit != null & !addEdit.getText().equals("")){
-//            String newName = addEdit.getText().toString();
-//            listData.add(newName);
-//            arrayAdapter.notifyDataSetChanged();
-//            eventListener.onItemAdded(newName);
-//        }
-//    }
+    private void doAdd() {
+        if (addEdit != null & !addEdit.getText().equals("")){
+            String newName = addEdit.getText().toString();
+            listData.add(newName);
+            regAdapter.notifyDataSetChanged();
+            eventListener.onItemAdded(newName);
+        }
+    }
 
     public void setListData(List<String> data) {
         listData = data;
 
         if (includedList !=null) {
-//            arrayAdapter = new SimpleArrayAdapter(getContext(),
-//                    R.layout.list_item, data);
-            regAdapter = new ArrayAdapter(getContext(),
-                    android.R.layout.simple_list_item_1);
+
+            regAdapter = new ArrayAdapter<String>(getContext(),
+                    R.layout.list_item, R.id.name, data);
 
             includedList.setAdapter(regAdapter);
         }
@@ -102,10 +100,6 @@ public class ListViewWithTopEdit extends LinearLayout {
         }
     }
 
-    public void  setRemovingListItems(boolean included) {
-        INCLUDE_REMOVING = included;
-    }
-
     private void setUpUI(Context context) {
         setOrientation(LinearLayout.VERTICAL);
 
@@ -118,70 +112,34 @@ public class ListViewWithTopEdit extends LinearLayout {
         addEdit = (EditText) this.findViewById(R.id.newName);
         addLayout = (LinearLayout) this.findViewById(R.id.addLayout);
 
-//        includedList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                eventListener.onListItemSelected(position, id);
-//            }
-//        });
-//
-//        addBtn.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                doAdd();
-//            }
-//        });
-    }
-
-//    public void setListEditViewListener(OnListEditViewListener listener){
-//        eventListener = listener;
-//    }
-//
-//    public void removeListEditViewListener(OnListEditViewListener listener){
-//        eventListener = null;
-//    }
-//
-//    public interface OnListEditViewListener extends EventListener {
-//        public void onItemAdded(String item);
-//        public void onListItemSelected(int position, long id);
-//    }
-
-    public class SimpleArrayAdapter extends ArrayAdapter<String> {
-        private Context context;
-        private List<String> values;
-        int res;
-
-        public SimpleArrayAdapter(Context context, int res, List<String> values) {
-            super(context, R.layout.list_item, values);
-            this.context = context;
-            this.values = values;
-            this.res = res;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            LayoutInflater inflater = (LayoutInflater) context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View rowView = inflater.inflate(res, parent, true);
-            TextView textView = (TextView) rowView.findViewById(R.id.name);
-            Button removeBtn = (Button) rowView.findViewById(R.id.remove);
-            textView.setBackgroundColor(Color.BLUE);
-            if (!INCLUDE_REMOVING) {
-                removeBtn.setVisibility(GONE);
+        includedList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                eventListener.onListItemSelected(position, id);
             }
+        });
 
-//            textView.setOnClickListener(new OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Log.d("TEXTVIEW", "CLICKED");
-//                }
-//            });
-
-            textView.setText(values.get(position));
-
-            return rowView;
-        }
+        addBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doAdd();
+            }
+        });
     }
+
+    public void setListEditViewListener(OnListEditViewListener listener){
+        eventListener = listener;
+    }
+
+    public void removeListEditViewListener(OnListEditViewListener listener){
+        eventListener = null;
+    }
+
+    public interface OnListEditViewListener extends EventListener {
+        public void onItemAdded(String item);
+        public void onListItemSelected(int position, long id);
+    }
+
 }
 
 

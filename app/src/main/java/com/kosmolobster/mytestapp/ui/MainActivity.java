@@ -25,25 +25,25 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         list = (ListViewWithTopEdit) findViewById(R.id.list);
-        list.setRemovingListItems(false);
-        setCurrentList("employees");
 
-//        list.setListEditViewListener(new ListViewWithTopEdit.OnListEditViewListener() {
-//
-//            @Override
-//            public void onItemAdded(String item) {
-//                Company company = new Company(item);
-//                company.save();
-//            }
-//
-//            @Override
-//            public void onListItemSelected(int position, long id) {
-//                Intent myIntent = new Intent(getApplicationContext(), DetailsActivity.class);
-//                myIntent.putExtra("KEY_INNER_ID", id);
-//                myIntent.putExtra("KEY_TYPE", CURRENT_LIST_TYPE);
-//                startActivity(myIntent);
-//            }
-//        });
+        list.setListEditViewListener(new ListViewWithTopEdit.OnListEditViewListener() {
+
+            @Override
+            public void onItemAdded(String item) {
+                Company company = new Company(item);
+                company.save();
+            }
+
+            @Override
+            public void onListItemSelected(int position, long id) {
+                Intent myIntent = new Intent(getApplicationContext(), DetailsActivity.class);
+                myIntent.putExtra("KEY_INNER_ID", id);
+                myIntent.putExtra("KEY_TYPE", CURRENT_LIST_TYPE);
+                startActivity(myIntent);
+            }
+        });
+
+        setCurrentList("employees");
     }
 
 

@@ -9,16 +9,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textIsSelectable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:clickable="false"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="10dp"
         android:textAlignment="center" />
-
-    <Button
-        android:id="@+id/remove"
-        android:text="-"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:background="@android:color/holo_red_light"
-        android:layout_gravity="right"/>
 
 </LinearLayout>

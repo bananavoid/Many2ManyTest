@@ -38,19 +38,19 @@ public class DetailsActivity extends ActionBarActivity {
 
         list = (ListViewWithTopEdit) findViewById(R.id.list);
 
-//        list.setListEditViewListener(new ListViewWithTopEdit.OnListEditViewListener() {
-//
-//
-//            @Override
-//            public void onItemAdded(String item) {
-//
-//            }
-//
-//            @Override
-//            public void onListItemSelected(int position, long id) {
-//
-//            }
-//        });
+        list.setListEditViewListener(new ListViewWithTopEdit.OnListEditViewListener() {
+
+
+            @Override
+            public void onItemAdded(String item) {
+
+            }
+
+            @Override
+            public void onListItemSelected(int position, long id) {
+
+            }
+        });
 
         showList(type, innerId);
 
@@ -66,7 +66,6 @@ public class DetailsActivity extends ActionBarActivity {
                 List select_companies = Select.from(CompanyEmployee.class)
                     .where(Condition.prop("employeename").eq(e_name))
                     .list();
-                list.setRemovingListItems(false);
                 list.setListData(select_companies);
                 list.setListBackground(getResources().getColor(android.R.color.holo_orange_light));
                 list.setAddLayoutVisibility(View.GONE);
@@ -77,7 +76,6 @@ public class DetailsActivity extends ActionBarActivity {
                 List select_employees = Select.from(CompanyEmployee.class)
                         .where(Condition.prop("companyname").eq(c_name))
                         .list();
-                list.setRemovingListItems(true);
                 list.setListData(select_employees);
                 list.setListBackground(getResources().getColor(android.R.color.holo_green_light));
                 list.setAddLayoutVisibility(View.VISIBLE);

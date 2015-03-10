@@ -18,7 +18,6 @@
 
             <Button
                 android:id="@+id/addBtn"
-                android:onClick="doAdd"
                 android:text="+"
                 android:layout_width="50dp"
                 android:layout_height="40dp"
