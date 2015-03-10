@@ -1,34 +1,23 @@
 package com.kosmolobster.mytestapp.models;
 
-import com.j256.ormlite.field.DatabaseField;
-import com.kosmolobster.mytestapp.db.Repo;
+import com.orm.SugarRecord;
 
-public class Company {
-    @DatabaseField(generatedId = true)
-    public String name;
-
-    public Company() {
-        // needed by ormlite
-    }
-
-    public Company(String name) {
-        this.name = name;
-    }
-
+public class Company extends SugarRecord<Company> {
     public String getName() {
         return name;
     }
 
-    public void setName(String firstname) {
-        this.name = firstname;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public int save(Repo repo){
-        return repo.companyRepo.create(this);
+    String name;
+
+    public Company(){
+        //don't remove - orm requires
     }
 
-    public int delete(Repo repo)
-    {
-        return repo.companyRepo.delete(this);
+    public Company(String name){
+        this.name = name;
     }
 }

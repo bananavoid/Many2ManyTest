@@ -1,4 +1,4 @@
-package com.kosmolobster.mytestapp;
+package com.kosmolobster.mytestapp.ui;
 
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
@@ -6,15 +6,17 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.kosmolobster.mytestapp.R;
 import com.kosmolobster.mytestapp.models.Company;
+import com.kosmolobster.mytestapp.models.CompanyEmployee;
 import com.kosmolobster.mytestapp.models.Employee;
+import com.orm.query.Condition;
+import com.orm.query.Select;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -23,7 +25,6 @@ public class MainActivity extends ActionBarActivity {
     private ListView listView;
     private String currentList = "";
     private LinearLayout saveLayout;
-    //private  DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,10 +44,17 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
-//        List<Employee> employees = MyTestApplication.repo.employeeRepo.getAll();
-//        List<Company> companies = MyTestApplication.repo.companyRepo.getAll();
+        List<Company> coms = Company.listAll(Company.class);
+        List<Employee> emps = Employee.listAll(Employee.class);
+        List<CompanyEmployee> ce = CompanyEmployee.listAll(CompanyEmployee.class);
 
-        setCurrentList("employees");
+        List select_employees = Select.from(CompanyEmployee.class)
+                .where(Condition.prop("companyname").eq("Company"))
+                .list();
+
+        List select_companies = Select.from(CompanyEmployee.class)
+                .where(Condition.prop("employeename").eq("Noah"))
+                .list();
     }
 
 

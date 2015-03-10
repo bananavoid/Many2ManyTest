@@ -1,35 +1,34 @@
 package com.kosmolobster.mytestapp;
 
-import android.app.Application;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
+import com.orm.SugarApp;
 
-import com.kosmolobster.mytestapp.db.Repo;
 import com.kosmolobster.mytestapp.models.Company;
 import com.kosmolobster.mytestapp.models.CompanyEmployee;
 import com.kosmolobster.mytestapp.models.Employee;
+import com.orm.SugarRecord;
 
 
-public class MyTestApplication extends Application {
-    private final static String DATABASE_URL = "/data/data/com.kosmolobster.mytestapp/databases/some_staff.db";
-    public static Repo repo;
+public class MyTestApplication extends SugarApp {
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        repo = new Repo(this);
+        SugarRecord.deleteAll(Company.class);
+        SugarRecord.deleteAll(Employee.class);
+        SugarRecord.deleteAll(CompanyEmployee.class);
 
         Company company = new Company("Company");
-        company.save(repo);
+        company.save();
 
         String[] values = getResources().getStringArray(R.array.employees_names);
 
         for (int i = 0; i < values.length - 1; ++i) {
             Employee employee = new Employee(values[i]);
-            employee.save(repo);
+            employee.save();
 
-            CompanyEmployee companyEmployee = new CompanyEmployee(company, employee);;
+            CompanyEmployee companyEmployee = new CompanyEmployee(company.getName(), employee.getName());
+            companyEmployee.save();
         }
     }
 }

@@ -1,39 +1,33 @@
 package com.kosmolobster.mytestapp.models;
 
-import com.j256.ormlite.field.DatabaseField;
+import com.orm.SugarRecord;
 
-/**
- * Created by kosmokapusta on 08.03.15.
- */
-public class CompanyEmployee {
-
-    @DatabaseField(generatedId = true)
-    public Employee employee;
-    @DatabaseField
-    public Company company;
-
-    public CompanyEmployee() {
-        // needed by ormlite
+public class CompanyEmployee extends SugarRecord<CompanyEmployee> {
+    public String getCompany_name() {
+        return company_name;
     }
 
-    public CompanyEmployee(Company company, Employee employee) {
-        this.company = company;
-        this.employee = employee;
+    public void setCompany_name(String company_name) {
+        this.company_name = company_name;
     }
 
-    public Employee getEmployee() {
-        return employee;
+    public String getEmployee_name() {
+        return employee_name;
     }
 
-    public void setEmployee(Employee employee) {
-        this.employee = employee;
+    public void setEmployee_name(String employee_name) {
+        this.employee_name = employee_name;
     }
 
-    public Company getCompany() {
-        return company;
+    String company_name;
+    String employee_name;
+
+    public CompanyEmployee(){
+        //don't remove - orm requires
     }
 
-    public void setCompany(Company company) {
-        this.company = company;
+    public CompanyEmployee(String c_id, String em_id){
+        this.company_name = c_id;
+        this.employee_name = em_id;
     }
 }

@@ -1,4 +1,4 @@
-package com.kosmolobster.mytestapp;
+package com.kosmolobster.mytestapp.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.kosmolobster.mytestapp.R;
 import com.kosmolobster.mytestapp.models.Company;
 import com.kosmolobster.mytestapp.models.Employee;
 

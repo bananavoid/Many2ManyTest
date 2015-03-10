@@ -1,4 +1,4 @@
-package com.kosmolobster.mytestapp;
+package com.kosmolobster.mytestapp.ui;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -32,6 +32,14 @@ public class ListViewWithTopEdit extends View {
 
     public ListViewWithTopEdit(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        includedList = new ListView(context);
+        addBtn = new Button(context);
+        addEdit = new EditText(context);
+
+        LinearLayout addLayout = new LinearLayout(context);
+        addLayout.setOrientation(LinearLayout.HORIZONTAL);
+
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
