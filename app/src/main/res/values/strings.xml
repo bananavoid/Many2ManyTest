@@ -1,0 +1,66 @@
+<resources>
+    <string name="app_name">MyTestApp</string>
+
+    <string name="emp_tab">Employees</string>
+    <string name="com_tab">Companies</string>
+    <string name="action_settings">Settings</string>
+    <string name="name_text">Name</string>
+    <string name="company_text">Company</string>
+    <string name="add_to_company">Add new employee</string>
+    <string name="this_is_desc">This is</string>
+    <string name="item_desc_company">that has such employees</string>
+    <string name="item_desc_employee">that was included in such companies</string>
+    <string name="can_destroyed">This company can be destroyed</string>
+    <string name="destroy_text">DESTROY</string>
+
+    <string-array
+        name="employees_names">
+        <item>Noah</item>
+        <item>Liam</item>
+        <item>Jacob</item>
+        <item>Mason</item>
+        <item>William</item>
+        <item>Ethan</item>
+        <item>Michael</item>
+        <item>Alexander</item>
+        <item>Jayden</item>
+        <item>Daniel</item>
+        <item>Elijah</item>
+        <item>Aiden</item>
+        <item>James</item>
+        <item>Benjamin</item>
+        <item>Matthew</item>
+        <item>Jackson</item>
+        <item>Logan</item>
+        <item>David</item>
+        <item>Anthony</item>
+        <item>Joseph</item>
+    </string-array>
+
+    <string-array
+        name="companies_names">
+        <item>Google</item>
+        <item>Kosmolobster</item>
+        <item>Honda</item>
+        <item>Moose</item>
+        <item>Disney</item>
+        <item>Intel</item>
+        <item>Bambaleyo</item>
+        <item>Bush</item>
+        <item>Jaguar</item>
+        <item>Kosmolemon</item>
+        <item>Yeah</item>
+        <item>Mordor</item>
+        <item>Moleskin</item>
+        <item>Bububu</item>
+        <item>Apple</item>
+        <item>Lou</item>
+        <item>Hehehe</item>
+        <item>Rainy</item>
+        <item>Ford</item>
+        <item>Jeep</item>
+    </string-array>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+
+</resources>
