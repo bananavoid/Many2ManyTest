@@ -13,6 +13,9 @@
     <string name="can_destroyed">This company can be destroyed</string>
     <string name="destroy_text">DESTROY IT</string>
     <string name="add_edit_hint">Enter name to add new item</string>
+    <string name="full_text">This company is full</string>
+    <string name="employee_already_here">Employee already in company!</string>
+
 
     <string-array
         name="employees_names">

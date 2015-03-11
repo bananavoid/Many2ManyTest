@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -27,7 +28,7 @@ import java.util.List;
 public class ListViewWithTopEdit extends LinearLayout {
     private ListView includedList;
     private Button addBtn;
-    private EditText addEdit;
+    private AutoCompleteTextView addEdit;
     private OnListEditViewListener eventListener;
     private LinearLayout addLayout;
     private SimpleCursorAdapter dataAdapter;
@@ -75,7 +76,7 @@ public class ListViewWithTopEdit extends LinearLayout {
 
         includedList = (ListView) this.findViewById(R.id.included);
         addBtn = (Button) this.findViewById(R.id.addBtn);
-        addEdit = (EditText) this.findViewById(R.id.newName);
+        addEdit = (AutoCompleteTextView) this.findViewById(R.id.newName);
         addLayout = (LinearLayout) this.findViewById(R.id.addLayout);
 
         includedList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -146,6 +147,27 @@ public class ListViewWithTopEdit extends LinearLayout {
 
     public void removeListEditViewListener(OnListEditViewListener listener){
         eventListener = null;
+    }
+
+    public void setAutocompleteData(List<String> data) {
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
+                android.R.layout.simple_dropdown_item_1line, data);
+
+        addEdit.setThreshold(1);
+        addEdit.setAdapter(adapter);
+    }
+
+    public String getTextFromEdit() {
+        return addEdit.getText().toString();
+    }
+
+    public void setTextEditEnabled(boolean enabled) {
+        addEdit.setEnabled(enabled);
+        addBtn.setEnabled(enabled);
+    }
+
+    public void setTextEditHint(int string_id) {
+        addEdit.setHint(string_id);
     }
 
     public interface OnListEditViewListener extends EventListener {

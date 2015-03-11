@@ -6,6 +6,7 @@ import com.kosmolobster.mytestapp.models.Company;
 import com.kosmolobster.mytestapp.models.CompanyEmployee;
 import com.kosmolobster.mytestapp.models.Employee;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -68,5 +69,13 @@ public class Utils {
             });
         }
         return matrixCursor;
+    }
+
+    public static List<String> getEmployeesNamesList(List<Employee> emps) {
+        List<String> names = new ArrayList<>();
+        for(int i = 0; i < emps.size(); ++i) {
+            names.add(emps.get(i).getName());
+        }
+        return names;
     }
 }

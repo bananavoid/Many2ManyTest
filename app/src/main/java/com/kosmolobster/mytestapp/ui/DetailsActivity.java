@@ -2,11 +2,14 @@ package com.kosmolobster.mytestapp.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kosmolobster.mytestapp.R;
 import com.kosmolobster.mytestapp.Utils;
@@ -29,17 +32,20 @@ public class DetailsActivity extends ActionBarActivity {
     private String type;
     private Button destroyBtn;
     private TextView textDesc;
+    private List companyEmployees;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
+        //getActionBar().setDisplayHomeAsUpEnabled(true);
+
         innerId = getIntent().getLongExtra(KEY_INNER_ID, -1l);
         type = getIntent().getStringExtra(KEY_TYPE);
 
         list = (ListViewWithTopEdit) findViewById(R.id.list);
-        destroyBtn = (Button) findViewById(R.id.addBtn);
+        destroyBtn = (Button) findViewById(R.id.destroyBtn);
         textDesc = (TextView) findViewById(R.id.item_desc);
 
         list.setListEditViewListener(new ListViewWithTopEdit.OnListEditViewListener() {
@@ -47,7 +53,19 @@ public class DetailsActivity extends ActionBarActivity {
 
             @Override
             public void onItemAdded(String item) {
+                String name = list.getTextFromEdit();
 
+                if (companyEmployees != null) {
+                    if (companyEmployees.contains(name)) {
+                        Toast.makeText(getApplicationContext(), R.string.employee_already_here,
+                                Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    CompanyEmployee companyEmployee = new CompanyEmployee(Company.findById(Company.class, innerId).getName(),
+                            name);
+                    companyEmployee.save();
+                    showList("companies", innerId);
+                }
             }
 
             @Override
@@ -59,7 +77,6 @@ public class DetailsActivity extends ActionBarActivity {
         showList(type, innerId);
     }
 
-
     private void showList(String type, long id) {
         Utils utils = new Utils();
         TextView nameView = (TextView) findViewById(R.id.item_name);
@@ -68,16 +85,16 @@ public class DetailsActivity extends ActionBarActivity {
             case "employees":
                 String e_name = Employee.findById(Employee.class, id).getName();
 
-                List select_companies = Select.from(CompanyEmployee.class)
-                    .where(Condition.prop("employeename").eq(e_name))
-                    .list();
+                companyEmployees = Select.from(CompanyEmployee.class)
+                        .where(Condition.prop("employeename").eq(e_name))
+                        .list();
 
                 nameView.setText(e_name);
                 nameView.setTextColor(getResources().getColor(android.R.color.holo_orange_light));
 
                 textDesc.setText(R.string.item_desc_employee);
 
-                list.setListData(utils.getCompaniesForEmployeer(select_companies));
+                list.setListData(utils.getCompaniesForEmployeer(companyEmployees));
                 list.setListBackground(getResources().getColor(android.R.color.holo_orange_light));
                 list.setAddLayoutVisibility(View.GONE);
 
@@ -89,6 +106,14 @@ public class DetailsActivity extends ActionBarActivity {
                         .where(Condition.prop("companyname").eq(c_name))
                         .list();
 
+                if(select_employees.size() == (Employee.listAll(Employee.class)).size()) {
+                    list.setTextEditEnabled(false);
+                    list.setTextEditHint(R.string.full_text);
+                } else {
+                    list.setTextEditEnabled(true);
+                    list.setTextEditHint(R.string.add_edit_hint);
+                }
+
                 nameView.setText(c_name);
                 nameView.setTextColor(getResources().getColor(android.R.color.holo_green_light));
 
@@ -97,11 +122,31 @@ public class DetailsActivity extends ActionBarActivity {
                 list.setListData(utils.getEmployeesForCompany(select_employees));
                 list.setListBackground(getResources().getColor(android.R.color.holo_green_light));
                 list.setAddLayoutVisibility(View.VISIBLE);
+                list.setAutocompleteData(utils.getEmployeesNamesList(Employee.listAll(Employee.class)));
+                if (c_name.equals("Company")) {
+                    destroyBtn.setVisibility(View.GONE);
+                } else {
+                    destroyBtn.setVisibility(View.VISIBLE);
+                }
 
-                destroyBtn.setVisibility(View.VISIBLE);
                 break;
             default:
                 break;
+        }
+    }
+
+    public void setUpAddLayout() {
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
