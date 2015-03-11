@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -26,7 +27,8 @@ public class DetailsActivity extends ActionBarActivity {
 
     private long innerId;
     private String type;
-    LinearLayout destroyLayout;
+    private Button destroyBtn;
+    private TextView textDesc;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,8 @@ public class DetailsActivity extends ActionBarActivity {
         type = getIntent().getStringExtra(KEY_TYPE);
 
         list = (ListViewWithTopEdit) findViewById(R.id.list);
+        destroyBtn = (Button) findViewById(R.id.addBtn);
+        textDesc = (TextView) findViewById(R.id.item_desc);
 
         list.setListEditViewListener(new ListViewWithTopEdit.OnListEditViewListener() {
 
@@ -53,40 +57,57 @@ public class DetailsActivity extends ActionBarActivity {
         });
 
         showList(type, innerId);
-
-        destroyLayout = (LinearLayout) findViewById(R.id.destroyLayout);
     }
 
 
     private void showList(String type, long id) {
         Utils utils = new Utils();
+        TextView nameView = (TextView) findViewById(R.id.item_name);
+
         switch (type){
             case "employees":
                 String e_name = Employee.findById(Employee.class, id).getName();
+
                 List select_companies = Select.from(CompanyEmployee.class)
                     .where(Condition.prop("employeename").eq(e_name))
                     .list();
-                list.setListData(select_companies);
+
+                nameView.setText(e_name);
+                nameView.setTextColor(getResources().getColor(android.R.color.holo_orange_light));
+
+                textDesc.setText(R.string.item_desc_employee);
+
+                list.setListData(utils.getCompaniesForEmployeer(select_companies));
                 list.setListBackground(getResources().getColor(android.R.color.holo_orange_light));
                 list.setAddLayoutVisibility(View.GONE);
-                destroyLayout.setVisibility(View.GONE);
+
+                destroyBtn.setVisibility(View.GONE);
                 break;
             case "companies":
-                String c_name = Employee.findById(Employee.class, id).getName();
+                String c_name = Company.findById(Company.class, id).getName();
                 List select_employees = Select.from(CompanyEmployee.class)
                         .where(Condition.prop("companyname").eq(c_name))
                         .list();
-                list.setListData(select_employees);
+
+                nameView.setText(c_name);
+                nameView.setTextColor(getResources().getColor(android.R.color.holo_green_light));
+
+                textDesc.setText(R.string.item_desc_company);
+
+                list.setListData(utils.getEmployeesForCompany(select_employees));
                 list.setListBackground(getResources().getColor(android.R.color.holo_green_light));
                 list.setAddLayoutVisibility(View.VISIBLE);
-                destroyLayout.setVisibility(View.VISIBLE);
+
+                destroyBtn.setVisibility(View.VISIBLE);
                 break;
             default:
                 break;
         }
     }
 
-    private void setUpUI() {
-
+    public void doDestroy(View view) {
+        Company company = Company.findById(Company.class, innerId);
+        company.delete();
+        finish();
     }
 }

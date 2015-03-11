@@ -31,29 +31,15 @@
             android:layout_marginTop="20dp"
             android:layout_marginLeft="20dp" />
 
-        <LinearLayout
-            android:id="@+id/destroyLayout"
+        <Button
+            android:id="@+id/destroyBtn"
+            android:text="@string/destroy_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/canDestroyed_text"
-                android:text="@string/can_destroyed"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal" />
-
-            <Button
-                android:id="@+id/destroyBtn"
-                android:text="@string/destroy_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/holo_red_light"
-                android:layout_gravity="center_horizontal"
-                android:textSize="10dp"
-                android:layout_marginTop="20dp" />
-        </LinearLayout>
+            android:background="@android:color/holo_red_light"
+            android:layout_gravity="center_horizontal"
+            android:textSize="10dp"
+            android:layout_marginTop="20dp" />
 
     </LinearLayout>
 

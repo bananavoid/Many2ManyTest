@@ -2,22 +2,22 @@ package com.kosmolobster.mytestapp.ui;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.Intent;
+import android.database.Cursor;
+import android.database.MatrixCursor;
+import android.database.MergeCursor;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.os.Build;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.kosmolobster.mytestapp.R;
 
@@ -25,15 +25,13 @@ import java.util.EventListener;
 import java.util.List;
 
 public class ListViewWithTopEdit extends LinearLayout {
-    boolean INCLUDE_REMOVING = true;
-
-    ListView includedList;
-    Button addBtn;
-    EditText addEdit;
-    List<String> listData;
-    ArrayAdapter regAdapter;
-    OnListEditViewListener eventListener;
-    LinearLayout addLayout;
+    private ListView includedList;
+    private Button addBtn;
+    private EditText addEdit;
+    private OnListEditViewListener eventListener;
+    private LinearLayout addLayout;
+    private SimpleCursorAdapter dataAdapter;
+    private MatrixCursor matrixCursor;
 
     public ListViewWithTopEdit(Context context) {
         super(context);
@@ -67,41 +65,9 @@ public class ListViewWithTopEdit extends LinearLayout {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
-    private void doAdd() {
-        if (addEdit != null & !addEdit.getText().equals("")){
-            String newName = addEdit.getText().toString();
-            listData.add(newName);
-            regAdapter.notifyDataSetChanged();
-            eventListener.onItemAdded(newName);
-        }
-    }
-
-    public void setListData(List<String> data) {
-        listData = data;
-
-        if (includedList !=null) {
-
-            regAdapter = new ArrayAdapter<String>(getContext(),
-                    R.layout.list_item, R.id.name, data);
-
-            includedList.setAdapter(regAdapter);
-        }
-    }
-
-    public void setAddLayoutVisibility(int visibility) {
-        if (addLayout != null) {
-            addLayout.setVisibility(visibility);
-        }
-    }
-
-    public void setListBackground(int color) {
-        if (includedList != null) {
-            includedList.setBackgroundColor(color);
-        }
-    }
-
     private void setUpUI(Context context) {
         setOrientation(LinearLayout.VERTICAL);
+        setMinimumWidth(LayoutParams.MATCH_PARENT);
 
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -115,6 +81,7 @@ public class ListViewWithTopEdit extends LinearLayout {
         includedList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //Cursor cursor = (Cursor) includedList.getItemAtPosition(position);
                 eventListener.onListItemSelected(position, id);
             }
         });
@@ -125,6 +92,52 @@ public class ListViewWithTopEdit extends LinearLayout {
                 doAdd();
             }
         });
+    }
+
+    private void doAdd() {
+        if (addEdit != null){
+            String newName = addEdit.getText().toString();
+//            MatrixCursor extras = new MatrixCursor(new String[] { "_id", "name" });
+//            extras.addRow(new String[] { "1", newName });
+//            MatrixCursor[] cursors = { extras, matrixCursor };
+//            Cursor extendedCursor = new MergeCursor(cursors);
+            eventListener.onItemAdded(newName);
+        }
+    }
+
+    public void setListData(Cursor cursor) {
+        String[] columns = new String[] {
+                "name"
+        };
+
+        int[] to = new int[] {
+            R.id.name,
+        };
+
+        if (includedList !=null) {
+
+            dataAdapter = new SimpleCursorAdapter(
+                    getContext(), R.layout.list_item,
+                    cursor,
+                    columns,
+                    to,
+                    0);
+
+
+            includedList.setAdapter(dataAdapter);
+        }
+    }
+
+    public void setAddLayoutVisibility(int visibility) {
+        if (addLayout != null) {
+            addLayout.setVisibility(visibility);
+        }
+    }
+
+    public void setListBackground(int color) {
+        if (includedList != null) {
+            includedList.setBackgroundColor(color);
+        }
     }
 
     public void setListEditViewListener(OnListEditViewListener listener){

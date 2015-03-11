@@ -32,13 +32,15 @@ public class MainActivity extends ActionBarActivity {
             public void onItemAdded(String item) {
                 Company company = new Company(item);
                 company.save();
+
+                setCurrentList("companies");
             }
 
             @Override
             public void onListItemSelected(int position, long id) {
                 Intent myIntent = new Intent(getApplicationContext(), DetailsActivity.class);
-                myIntent.putExtra("KEY_INNER_ID", id);
-                myIntent.putExtra("KEY_TYPE", CURRENT_LIST_TYPE);
+                myIntent.putExtra("key_inner_id", id);
+                myIntent.putExtra("key_type", CURRENT_LIST_TYPE);
                 startActivity(myIntent);
             }
         });
@@ -56,13 +58,11 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onResume() {
-        //dbHelper.getWritableDatabase();
         super.onResume();
     }
 
     @Override
     protected void onPause() {
-        //dbHelper.close();
         super.onPause();
     }
 
@@ -73,13 +73,13 @@ public class MainActivity extends ActionBarActivity {
         switch (type){
             case "employees":
                 List<Employee> emps = Employee.listAll(Employee.class);
-                list.setListData(utils.getAllEmployeesNames(emps));
+                list.setListData(utils.getEmployeesCursor(emps));
                 list.setListBackground(getResources().getColor(android.R.color.holo_orange_light));
                 list.setAddLayoutVisibility(View.GONE);
                 break;
             case "companies":
                 List<Company> comps = Employee.listAll(Company.class);
-                list.setListData(utils.getAllCompaniesNames(comps));
+                list.setListData(utils.getCompaniesCursor(comps));
                 list.setListBackground(getResources().getColor(android.R.color.holo_green_light));
                 list.setAddLayoutVisibility(View.VISIBLE);
                 break;

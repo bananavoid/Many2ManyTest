@@ -11,7 +11,8 @@
     <string name="item_desc_company">that has such employees</string>
     <string name="item_desc_employee">that was included in such companies</string>
     <string name="can_destroyed">This company can be destroyed</string>
-    <string name="destroy_text">DESTROY</string>
+    <string name="destroy_text">DESTROY IT</string>
+    <string name="add_edit_hint">Enter name to add new item</string>
 
     <string-array
         name="employees_names">
