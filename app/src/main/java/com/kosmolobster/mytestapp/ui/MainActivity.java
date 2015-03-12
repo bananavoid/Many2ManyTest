@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import com.kosmolobster.mytestapp.DbUtils;
+import com.kosmolobster.mytestapp.database.DbUtils;
 import com.kosmolobster.mytestapp.R;
 import com.kosmolobster.mytestapp.models.Company;
 
@@ -31,15 +31,15 @@ public class MainActivity extends ActionBarActivity {
         list.setListEditViewListener(new ListViewWithTopEdit.OnListEditViewListener() {
 
             @Override
-            public void onItemAdded(String item) {
-                if (item.isEmpty()) {
+            public void onItemAdded(String name) {
+                if (name.isEmpty()) {
                     Toast.makeText(getApplicationContext(), R.string.item_cannot_be_empty,
                             Toast.LENGTH_LONG).show();
-                } else if (DbUtils.isItExistingCompany(item)) {
+                } else if (DbUtils.isItExistingCompany(name)) {
                     Toast.makeText(getApplicationContext(), R.string.company_exists,
                             Toast.LENGTH_LONG).show();
                 } else {
-                    Company company = new Company(item);
+                    Company company = new Company(name);
                     company.save();
 
                     setCurrentList(CURRENT_LIST_TYPE);

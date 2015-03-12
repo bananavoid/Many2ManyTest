@@ -12,15 +12,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.kosmolobster.mytestapp.DbUtils;
+import com.kosmolobster.mytestapp.database.DbUtils;
 import com.kosmolobster.mytestapp.R;
-import com.kosmolobster.mytestapp.models.Company;
 import com.kosmolobster.mytestapp.models.CompanyEmployee;
-import com.kosmolobster.mytestapp.models.Employee;
-import com.orm.query.Condition;
-import com.orm.query.Select;
-
-import java.util.List;
 
 
 public class DetailsActivity extends ActionBarActivity {
@@ -56,21 +50,19 @@ public class DetailsActivity extends ActionBarActivity {
 
 
             @Override
-            public void onItemAdded(String item) {
-                if (item.isEmpty()) {
+            public void onItemAdded(String name) {
+                if (name.isEmpty()) {
                     Toast.makeText(getApplicationContext(), R.string.item_cannot_be_empty,
                             Toast.LENGTH_LONG).show();
-                } else if (!DbUtils.isItExistingEmployee(item)) {
+                } else if (!DbUtils.isItExistingEmployee(name)) {
                     Toast.makeText(getApplicationContext(), R.string.mo_such_employee,
                             Toast.LENGTH_LONG).show();
-                } else if (DbUtils.isItCompanyEmployee(item, innerId)) {
+                } else if (DbUtils.isItCompanyEmployee(name, innerId)) {
                     Toast.makeText(getApplicationContext(), R.string.employee_already_here,
                             Toast.LENGTH_LONG).show();
                 } else {
-                    CompanyEmployee companyEmployee = new CompanyEmployee(Company.findById(Company.class, innerId).getName(),
-                            item);
-                    companyEmployee.save();
-                    showList("companies", innerId);
+                    DbUtils.saveCompanyEmployee(DbUtils.getCompanyName(innerId), name);
+                    showList("companies");
                 }
             }
 
@@ -87,29 +79,29 @@ public class DetailsActivity extends ActionBarActivity {
             }
         });
 
-        showList(type, innerId);
+        showList(type);
     }
 
-    private void showList(String type, long id) {
+    private void showList(String type) {
         TextView nameView = (TextView) findViewById(R.id.item_name);
 
         switch (type){
             case "employees":
-                nameView.setText(Employee.findById(Employee.class, id).getName());
+                nameView.setText(DbUtils.getEmployeeName(innerId));
                 nameView.setTextColor(getResources().getColor(R.color.employee_color));
 
                 textDesc.setText(R.string.item_desc_employee);
 
-                list.setListData(DbUtils.getEmployeeRelationCursor(id));
+                list.setListData(DbUtils.getEmployeeRelationCursor(innerId));
                 list.setListBackground(getResources().getColor(R.color.employee_color));
                 list.setAddLayoutVisibility(View.GONE);
 
                 destroyBtn.setVisibility(View.GONE);
                 break;
             case "companies":
-                String c_name = Company.findById(Company.class, id).getName();
+                String c_name = DbUtils.getCompanyName(innerId);
 
-                if(DbUtils.isItCompanyFull(id)) {
+                if(DbUtils.isItCompanyFull(innerId)) {
                     list.setTextEditEnabled(false);
                     list.setTextEditHint(R.string.full_text);
                 } else {
@@ -122,10 +114,10 @@ public class DetailsActivity extends ActionBarActivity {
 
                 textDesc.setText(R.string.item_desc_company);
 
-                list.setListData(DbUtils.getCompanyRelationCursor(id));
+                list.setListData(DbUtils.getCompanyRelationCursor(innerId));
                 list.setListBackground(getResources().getColor(R.color.company_color));
                 list.setAddLayoutVisibility(View.VISIBLE);
-                list.setAutocompleteData(DbUtils.getEmployeesNamesList(Employee.listAll(Employee.class)));
+                list.setAutocompleteData(DbUtils.getEmployeesNamesList());
 
                 if (c_name.equals("Company")) {
                     destroyBtn.setVisibility(View.GONE);
@@ -150,29 +142,18 @@ public class DetailsActivity extends ActionBarActivity {
     }
 
     public void doDestroyCompany(View view) {
-        Company company = Company.findById(Company.class, innerId);
-
-        List<CompanyEmployee> com = Select.from(CompanyEmployee.class)
-                .where(Condition.prop("companyname").eq(company.getName()))
-                .list();
-
-        for (int i = 0; i < com.size(); ++i) {
-            CompanyEmployee ce = com.get(i);
-            ce.delete();
-        }
-
-        company.delete();
-
+        DbUtils.deleteCompany(innerId);
         finish();
     }
 
     private void doDeleteEmployee(long id) {
-        CompanyEmployee.findById(CompanyEmployee.class, id).delete();
+        DbUtils.deleteCompanyEmployee(id);
         list.setListData(DbUtils.getCompanyRelationCursor(innerId));
     }
 
     public void showAlertDialog(final long id) {
-        CompanyEmployee ce = CompanyEmployee.findById(CompanyEmployee.class, id);
+        CompanyEmployee ce = DbUtils.getCompanyEmployee(id);
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Owww");
         builder.setMessage("Do you want to delete " +
