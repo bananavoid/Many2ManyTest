@@ -25,7 +25,7 @@
 
         <TextView
             android:id="@+id/item_desc"
-            android:layout_width="wrap_content"
+            android:layout_width="130dp"
             android:layout_height="wrap_content"
             android:textSize="20dp"
             android:layout_marginTop="20dp"
@@ -36,10 +36,11 @@
             android:text="@string/destroy_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/holo_red_light"
+            android:background="@color/conrols_destroy"
             android:layout_gravity="center_horizontal"
             android:textSize="10dp"
-            android:layout_marginTop="20dp" />
+            android:layout_marginTop="20dp"
+            android:onClick="doDestroyCompany"/>
 
     </LinearLayout>
 

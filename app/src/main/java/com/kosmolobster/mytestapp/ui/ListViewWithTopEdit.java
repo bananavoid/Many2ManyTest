@@ -3,20 +3,16 @@ package com.kosmolobster.mytestapp.ui;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.MatrixCursor;
-import android.database.MergeCursor;
-import android.graphics.Canvas;
 import android.os.Build;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
@@ -32,7 +28,6 @@ public class ListViewWithTopEdit extends LinearLayout {
     private OnListEditViewListener eventListener;
     private LinearLayout addLayout;
     private SimpleCursorAdapter dataAdapter;
-    private MatrixCursor matrixCursor;
 
     public ListViewWithTopEdit(Context context) {
         super(context);
@@ -58,14 +53,6 @@ public class ListViewWithTopEdit extends LinearLayout {
         setUpUI(context);
     }
 
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-    }
-
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
-
     private void setUpUI(Context context) {
         setOrientation(LinearLayout.VERTICAL);
         setMinimumWidth(LayoutParams.MATCH_PARENT);
@@ -82,8 +69,15 @@ public class ListViewWithTopEdit extends LinearLayout {
         includedList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //Cursor cursor = (Cursor) includedList.getItemAtPosition(position);
-                eventListener.onListItemSelected(position, id);
+                eventListener.onListItemSelected(id);
+            }
+        });
+
+        includedList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                eventListener.onListItemLongPressed(position, id);
+                return true;
             }
         });
 
@@ -98,12 +92,16 @@ public class ListViewWithTopEdit extends LinearLayout {
     private void doAdd() {
         if (addEdit != null){
             String newName = addEdit.getText().toString();
-//            MatrixCursor extras = new MatrixCursor(new String[] { "_id", "name" });
-//            extras.addRow(new String[] { "1", newName });
-//            MatrixCursor[] cursors = { extras, matrixCursor };
-//            Cursor extendedCursor = new MergeCursor(cursors);
             eventListener.onItemAdded(newName);
+            addEdit.setText("");
+            hideKeyboard();
         }
+    }
+
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getContext().getApplicationContext().getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(addEdit.getWindowToken(), 0);
     }
 
     public void setListData(Cursor cursor) {
@@ -145,20 +143,12 @@ public class ListViewWithTopEdit extends LinearLayout {
         eventListener = listener;
     }
 
-    public void removeListEditViewListener(OnListEditViewListener listener){
-        eventListener = null;
-    }
-
     public void setAutocompleteData(List<String> data) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
                 android.R.layout.simple_dropdown_item_1line, data);
 
         addEdit.setThreshold(1);
         addEdit.setAdapter(adapter);
-    }
-
-    public String getTextFromEdit() {
-        return addEdit.getText().toString();
     }
 
     public void setTextEditEnabled(boolean enabled) {
@@ -172,7 +162,8 @@ public class ListViewWithTopEdit extends LinearLayout {
 
     public interface OnListEditViewListener extends EventListener {
         public void onItemAdded(String item);
-        public void onListItemSelected(int position, long id);
+        public void onListItemSelected(long id);
+        public void onListItemLongPressed(int position, long id);
     }
 
 }

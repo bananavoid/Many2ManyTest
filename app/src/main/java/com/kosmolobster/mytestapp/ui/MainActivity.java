@@ -5,17 +5,15 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.Toast;
 
+import com.kosmolobster.mytestapp.DbUtils;
 import com.kosmolobster.mytestapp.R;
-import com.kosmolobster.mytestapp.Utils;
 import com.kosmolobster.mytestapp.models.Company;
-import com.kosmolobster.mytestapp.models.Employee;
-
-import java.util.List;
-
 
 public class MainActivity extends ActionBarActivity {
-    private String CURRENT_LIST_TYPE = "";
+    private String CURRENT_LIST_TYPE = "employees";
 
     ListViewWithTopEdit list;
 
@@ -24,63 +22,73 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getWindow().setSoftInputMode(
+            WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+        );
+
         list = (ListViewWithTopEdit) findViewById(R.id.list);
 
         list.setListEditViewListener(new ListViewWithTopEdit.OnListEditViewListener() {
 
             @Override
             public void onItemAdded(String item) {
-                Company company = new Company(item);
-                company.save();
+                if (item.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), R.string.item_cannot_be_empty,
+                            Toast.LENGTH_LONG).show();
+                } else if (DbUtils.isItExistingCompany(item)) {
+                    Toast.makeText(getApplicationContext(), R.string.company_exists,
+                            Toast.LENGTH_LONG).show();
+                } else {
+                    Company company = new Company(item);
+                    company.save();
 
-                setCurrentList("companies");
+                    setCurrentList(CURRENT_LIST_TYPE);
+                }
             }
 
             @Override
-            public void onListItemSelected(int position, long id) {
+            public void onListItemSelected(long id) {
                 Intent myIntent = new Intent(getApplicationContext(), DetailsActivity.class);
                 myIntent.putExtra("key_inner_id", id);
                 myIntent.putExtra("key_type", CURRENT_LIST_TYPE);
                 startActivity(myIntent);
             }
+
+            @Override
+            public void onListItemLongPressed(int position, long id) {
+
+            }
         });
 
-        setCurrentList("employees");
+        setCurrentList(CURRENT_LIST_TYPE);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        //getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onStart() {
+        super.onStart();
+        if (CURRENT_LIST_TYPE != null)
+            setCurrentList(CURRENT_LIST_TYPE);
     }
 
     private void setCurrentList(String type) {
         CURRENT_LIST_TYPE = type;
-        Utils utils = new Utils();
 
         switch (type){
             case "employees":
-                List<Employee> emps = Employee.listAll(Employee.class);
-                list.setListData(utils.getEmployeesCursor(emps));
-                list.setListBackground(getResources().getColor(android.R.color.holo_orange_light));
+                list.setListData(DbUtils.getEmployeesCursor());
+                list.setListBackground(getResources().getColor(R.color.employee_color));
                 list.setAddLayoutVisibility(View.GONE);
                 break;
             case "companies":
-                List<Company> comps = Employee.listAll(Company.class);
-                list.setListData(utils.getCompaniesCursor(comps));
-                list.setListBackground(getResources().getColor(android.R.color.holo_green_light));
+                list.setListData(DbUtils.getCompaniesCursor());
+                list.setListBackground(getResources().getColor(R.color.company_color));
                 list.setAddLayoutVisibility(View.VISIBLE);
                 break;
             default:

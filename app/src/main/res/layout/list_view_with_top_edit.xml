@@ -12,17 +12,18 @@
 
             <AutoCompleteTextView
                 android:id="@+id/newName"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_weight="1"
+                android:imeOptions="flagNoExtractUi"
                 android:hint="@string/add_edit_hint"/>
 
             <Button
                 android:id="@+id/addBtn"
-                android:text="+"
+                android:text="@string/plus"
                 android:layout_width="50dp"
                 android:layout_height="40dp"
-                android:background="@android:color/holo_red_light"/>
+                android:background="@color/conrols_add"/>
 
         </LinearLayout>
 
@@ -31,7 +32,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"/>
 

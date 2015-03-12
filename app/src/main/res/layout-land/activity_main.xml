@@ -16,7 +16,7 @@
             android:text="@string/emp_tab"
             android:layout_margin="10dp"
             android:onClick="doShowEmployees"
-            android:background="@android:color/holo_orange_light" />
+            android:background="@color/employee_color" />
 
         <Button
             android:id="@+id/companiesBtn"
@@ -25,7 +25,7 @@
             android:text="@string/com_tab"
             android:layout_margin="10dp"
             android:onClick="doShowCompanies"
-            android:background="@android:color/holo_green_light" />
+            android:background="@color/company_color" />
 
     </LinearLayout>
 

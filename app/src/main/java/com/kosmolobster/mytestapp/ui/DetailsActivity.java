@@ -1,18 +1,19 @@
 package com.kosmolobster.mytestapp.ui;
 
-import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.kosmolobster.mytestapp.DbUtils;
 import com.kosmolobster.mytestapp.R;
-import com.kosmolobster.mytestapp.Utils;
 import com.kosmolobster.mytestapp.models.Company;
 import com.kosmolobster.mytestapp.models.CompanyEmployee;
 import com.kosmolobster.mytestapp.models.Employee;
@@ -32,14 +33,17 @@ public class DetailsActivity extends ActionBarActivity {
     private String type;
     private Button destroyBtn;
     private TextView textDesc;
-    private List companyEmployees;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
-        //getActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+        );
 
         innerId = getIntent().getLongExtra(KEY_INNER_ID, -1l);
         type = getIntent().getStringExtra(KEY_TYPE);
@@ -53,24 +57,33 @@ public class DetailsActivity extends ActionBarActivity {
 
             @Override
             public void onItemAdded(String item) {
-                String name = list.getTextFromEdit();
-
-                if (companyEmployees != null) {
-                    if (companyEmployees.contains(name)) {
-                        Toast.makeText(getApplicationContext(), R.string.employee_already_here,
-                                Toast.LENGTH_LONG).show();
-                    }
+                if (item.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), R.string.item_cannot_be_empty,
+                            Toast.LENGTH_LONG).show();
+                } else if (!DbUtils.isItExistingEmployee(item)) {
+                    Toast.makeText(getApplicationContext(), R.string.mo_such_employee,
+                            Toast.LENGTH_LONG).show();
+                } else if (DbUtils.isItCompanyEmployee(item, innerId)) {
+                    Toast.makeText(getApplicationContext(), R.string.employee_already_here,
+                            Toast.LENGTH_LONG).show();
                 } else {
                     CompanyEmployee companyEmployee = new CompanyEmployee(Company.findById(Company.class, innerId).getName(),
-                            name);
+                            item);
                     companyEmployee.save();
                     showList("companies", innerId);
                 }
             }
 
             @Override
-            public void onListItemSelected(int position, long id) {
+            public void onListItemSelected(long id) {
 
+            }
+
+            @Override
+            public void onListItemLongPressed(int position, long id) {
+                if (type.equals("companies")) {
+                    showAlertDialog(id);
+                }
             }
         });
 
@@ -78,35 +91,25 @@ public class DetailsActivity extends ActionBarActivity {
     }
 
     private void showList(String type, long id) {
-        Utils utils = new Utils();
         TextView nameView = (TextView) findViewById(R.id.item_name);
 
         switch (type){
             case "employees":
-                String e_name = Employee.findById(Employee.class, id).getName();
-
-                companyEmployees = Select.from(CompanyEmployee.class)
-                        .where(Condition.prop("employeename").eq(e_name))
-                        .list();
-
-                nameView.setText(e_name);
-                nameView.setTextColor(getResources().getColor(android.R.color.holo_orange_light));
+                nameView.setText(Employee.findById(Employee.class, id).getName());
+                nameView.setTextColor(getResources().getColor(R.color.employee_color));
 
                 textDesc.setText(R.string.item_desc_employee);
 
-                list.setListData(utils.getCompaniesForEmployeer(companyEmployees));
-                list.setListBackground(getResources().getColor(android.R.color.holo_orange_light));
+                list.setListData(DbUtils.getEmployeeRelationCursor(id));
+                list.setListBackground(getResources().getColor(R.color.employee_color));
                 list.setAddLayoutVisibility(View.GONE);
 
                 destroyBtn.setVisibility(View.GONE);
                 break;
             case "companies":
                 String c_name = Company.findById(Company.class, id).getName();
-                List select_employees = Select.from(CompanyEmployee.class)
-                        .where(Condition.prop("companyname").eq(c_name))
-                        .list();
 
-                if(select_employees.size() == (Employee.listAll(Employee.class)).size()) {
+                if(DbUtils.isItCompanyFull(id)) {
                     list.setTextEditEnabled(false);
                     list.setTextEditHint(R.string.full_text);
                 } else {
@@ -115,28 +118,24 @@ public class DetailsActivity extends ActionBarActivity {
                 }
 
                 nameView.setText(c_name);
-                nameView.setTextColor(getResources().getColor(android.R.color.holo_green_light));
+                nameView.setTextColor(getResources().getColor(R.color.company_color));
 
                 textDesc.setText(R.string.item_desc_company);
 
-                list.setListData(utils.getEmployeesForCompany(select_employees));
-                list.setListBackground(getResources().getColor(android.R.color.holo_green_light));
+                list.setListData(DbUtils.getCompanyRelationCursor(id));
+                list.setListBackground(getResources().getColor(R.color.company_color));
                 list.setAddLayoutVisibility(View.VISIBLE);
-                list.setAutocompleteData(utils.getEmployeesNamesList(Employee.listAll(Employee.class)));
+                list.setAutocompleteData(DbUtils.getEmployeesNamesList(Employee.listAll(Employee.class)));
+
                 if (c_name.equals("Company")) {
                     destroyBtn.setVisibility(View.GONE);
                 } else {
                     destroyBtn.setVisibility(View.VISIBLE);
                 }
-
                 break;
             default:
                 break;
         }
-    }
-
-    public void setUpAddLayout() {
-
     }
 
     @Override
@@ -150,9 +149,47 @@ public class DetailsActivity extends ActionBarActivity {
         }
     }
 
-    public void doDestroy(View view) {
+    public void doDestroyCompany(View view) {
         Company company = Company.findById(Company.class, innerId);
+
+        List<CompanyEmployee> com = Select.from(CompanyEmployee.class)
+                .where(Condition.prop("companyname").eq(company.getName()))
+                .list();
+
+        for (int i = 0; i < com.size(); ++i) {
+            CompanyEmployee ce = com.get(i);
+            ce.delete();
+        }
+
         company.delete();
+
         finish();
+    }
+
+    private void doDeleteEmployee(long id) {
+        CompanyEmployee.findById(CompanyEmployee.class, id).delete();
+        list.setListData(DbUtils.getCompanyRelationCursor(innerId));
+    }
+
+    public void showAlertDialog(final long id) {
+        CompanyEmployee ce = CompanyEmployee.findById(CompanyEmployee.class, id);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Owww");
+        builder.setMessage("Do you want to delete " +
+                ce.getEmployee_name() + "?");
+
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                doDeleteEmployee(id);
+            }
+        });
+        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                //do nothing
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 }

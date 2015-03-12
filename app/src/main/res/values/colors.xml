@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-   <!--<color name="employee_color"></color>-->
-   <!--<color name="company_color"></color>-->
-   <!--<color name="conrols_color"></color>-->
+   <color name="employee_color">#ffab00</color>
+   <color name="company_color">#8bc34a</color>
+   <color name="conrols_add">#03a9f4</color>
+   <color name="conrols_destroy">#f44336</color>
 </resources>

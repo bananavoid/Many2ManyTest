@@ -4,18 +4,22 @@
     <string name="emp_tab">Employees</string>
     <string name="com_tab">Companies</string>
     <string name="action_settings">Settings</string>
-    <string name="name_text">Name</string>
     <string name="company_text">Company</string>
     <string name="add_to_company">Add new employee</string>
     <string name="this_is_desc">This is</string>
-    <string name="item_desc_company">that has such employees</string>
-    <string name="item_desc_employee">that was included in such companies</string>
+    <string name="item_desc_company">has such employees</string>
+    <string name="item_desc_employee">was included in such companies</string>
     <string name="can_destroyed">This company can be destroyed</string>
     <string name="destroy_text">DESTROY IT</string>
-    <string name="add_edit_hint">Enter name to add new item</string>
-    <string name="full_text">This company is full</string>
+    <string name="add_edit_hint">Enter name</string>
+    <string name="full_text">The company is full</string>
     <string name="employee_already_here">Employee already in company!</string>
-
+    <string name="item_cannot_be_empty">The name cannot be empty!</string>
+    <string name="mo_such_employee">There is no such employee</string>
+    <string name="company_exists">This company already exists!</string>
+    <string name="plus">+</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
     <string-array
         name="employees_names">

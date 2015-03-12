@@ -13,7 +13,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginLeft="10dp">
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -23,17 +24,14 @@
 
             <TextView
                 android:id="@+id/item_name"
-                android:text="Google"
                 android:singleLine="false"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
-                android:textSize="40dp"
-                android:layout_marginLeft="10dp" />
+                android:textSize="40dp" />
 
             <TextView
                 android:id="@+id/item_desc"
-                android:text="ALEOPJIERUFHRFeifoefoefnerofiflwdcn"
                 android:singleLine="false"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
@@ -45,12 +43,13 @@
         <Button
             android:id="@+id/destroyBtn"
             android:text="@string/destroy_text"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="doDestroy"
+            android:onClick="doDestroyCompany"
             android:layout_gravity="center_horizontal"
-            android:background="@android:color/holo_red_light"
-            android:layout_margin="30dp" />
+            android:background="@color/conrols_destroy"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1" />
 
     </LinearLayout>
 
