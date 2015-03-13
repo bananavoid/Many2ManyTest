@@ -16,7 +16,6 @@ import com.kosmolobster.mytestapp.database.DbUtils;
 import com.kosmolobster.mytestapp.R;
 import com.kosmolobster.mytestapp.models.CompanyEmployee;
 
-
 public class DetailsActivity extends ActionBarActivity {
     public static String KEY_TYPE = "key_type";
     public static String KEY_INNER_ID = "key_inner_id";
@@ -72,7 +71,7 @@ public class DetailsActivity extends ActionBarActivity {
             }
 
             @Override
-            public void onListItemLongPressed(int position, long id) {
+            public void onListItemLongPressed(long id) {
                 if (type.equals("companies")) {
                     showAlertDialog(id);
                 }

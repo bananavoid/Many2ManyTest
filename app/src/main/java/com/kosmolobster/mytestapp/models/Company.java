@@ -11,7 +11,7 @@ public class Company extends SugarRecord<Company> {
         this.name = name;
     }
 
-    String name;
+    private String name;
 
     public Company(){
         //don't remove - orm requires

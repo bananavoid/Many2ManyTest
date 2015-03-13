@@ -15,7 +15,7 @@ import com.kosmolobster.mytestapp.models.Company;
 public class MainActivity extends ActionBarActivity {
     private String CURRENT_LIST_TYPE = "employees";
 
-    ListViewWithTopEdit list;
+    private ListViewWithTopEdit list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +55,7 @@ public class MainActivity extends ActionBarActivity {
             }
 
             @Override
-            public void onListItemLongPressed(int position, long id) {
+            public void onListItemLongPressed(long id) {
 
             }
         });

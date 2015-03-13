@@ -27,8 +27,8 @@ public class MyTestApplication extends SugarApp {
             String[] values = getResources().getStringArray(R.array.employees_names);
             Arrays.sort(values);
 
-            for (int i = 0; i < values.length - 1; ++i) {
-                Employee employee = new Employee(values[i]);
+            for (String name : values) {
+                Employee employee = new Employee(name);
                 employee.save();
 
                 CompanyEmployee companyEmployee = new CompanyEmployee(company.getName(), employee.getName());

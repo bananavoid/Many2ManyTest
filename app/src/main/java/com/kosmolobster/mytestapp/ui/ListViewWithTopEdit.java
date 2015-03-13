@@ -76,7 +76,7 @@ public class ListViewWithTopEdit extends LinearLayout {
         includedList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                eventListener.onListItemLongPressed(position, id);
+                eventListener.onListItemLongPressed(id);
                 return true;
             }
         });
@@ -163,7 +163,7 @@ public class ListViewWithTopEdit extends LinearLayout {
     public interface OnListEditViewListener extends EventListener {
         public void onItemAdded(String item);
         public void onListItemSelected(long id);
-        public void onListItemLongPressed(int position, long id);
+        public void onListItemLongPressed(long id);
     }
 
 }

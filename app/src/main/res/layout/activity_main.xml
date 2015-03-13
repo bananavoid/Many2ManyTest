@@ -17,7 +17,8 @@
             android:text="@string/emp_tab"
             android:onClick="doShowEmployees"
             android:background="@color/employee_color"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            style=""/>
 
         <Button
             android:id="@+id/companiesBtn"

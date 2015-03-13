@@ -45,8 +45,7 @@ public final class DbUtils {
     public static void deleteCompany(long id) {
         List<CompanyEmployee> com = getCompanyRelationList(id);
 
-        for (int i = 0; i < com.size(); ++i) {
-            CompanyEmployee ce = com.get(i);
+        for (CompanyEmployee ce : com) {
             ce.delete();
         }
 
@@ -64,12 +63,13 @@ public final class DbUtils {
             "name"
         };
         MatrixCursor matrixCursor = new MatrixCursor(c_columns, 0);
-        for (int i = 0; i < emps.size(); ++i) {
+        for (Employee em : emps) {
             matrixCursor.addRow(new String[]{
-                    emps.get(i).getId().toString(),
-                    emps.get(i).getName()
+                    em.getId().toString(),
+                    em.getName()
             });
         }
+
         return matrixCursor;
     }
 
@@ -81,12 +81,14 @@ public final class DbUtils {
             "name"
         };
         MatrixCursor matrixCursor = new MatrixCursor(c_columns, 0);
-        for (int i = 0; i < comps.size(); ++i) {
+
+        for ( Company com : comps) {
             matrixCursor.addRow(new String[]{
-                    comps.get(i).getId().toString(),
-                    comps.get(i).getName()
+                    com.getId().toString(),
+                    com.getName()
             });
         }
+
         return matrixCursor;
     }
 
@@ -97,12 +99,13 @@ public final class DbUtils {
                 "name"
         };
         MatrixCursor matrixCursor = new MatrixCursor(c_columns, 0);
-        for (int i = 0; i < emps.size(); ++i) {
+        for (CompanyEmployee ce : emps) {
             matrixCursor.addRow(new String[] {
-                    emps.get(i).getId().toString(),
-                    emps.get(i).getEmployee_name()
+                    ce.getId().toString(),
+                    ce.getEmployee_name()
             });
         }
+
         return matrixCursor;
     }
 
@@ -113,21 +116,24 @@ public final class DbUtils {
                 "name"
         };
         MatrixCursor matrixCursor = new MatrixCursor(c_columns, 0);
-        for (int i = 0; i < comps.size(); ++i) {
+        for ( CompanyEmployee ce : comps) {
             matrixCursor.addRow(new String[] {
-                    comps.get(i).getId().toString(),
-                    comps.get(i).getCompany_name()
+                    ce.getId().toString(),
+                    ce.getCompany_name()
             });
         }
+
         return matrixCursor;
     }
 
     public static List<String> getEmployeesNamesList() {
         List<Employee> emps = getAllEmployees();
         List<String> names = new ArrayList<>();
-        for(int i = 0; i < emps.size(); ++i) {
-            names.add(emps.get(i).getName());
+
+        for ( Employee em : emps ) {
+            names.add(em.getName());
         }
+
         return names;
     }
 

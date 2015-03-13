@@ -19,8 +19,8 @@ public class CompanyEmployee extends SugarRecord<CompanyEmployee> {
         this.employee_name = employee_name;
     }
 
-    String company_name;
-    String employee_name;
+    private String company_name;
+    private String employee_name;
 
     public CompanyEmployee(){
         //don't remove - orm requires
