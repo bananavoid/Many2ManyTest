@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.kosmolobster.mytestapp.database.DbUtils;
 import com.kosmolobster.mytestapp.R;
@@ -51,14 +50,11 @@ public class DetailsActivity extends ActionBarActivity {
             @Override
             public void onItemAdded(String name) {
                 if (name.isEmpty()) {
-                    Toast.makeText(getApplicationContext(), R.string.item_cannot_be_empty,
-                            Toast.LENGTH_LONG).show();
+                    UiUtils.showToast(getApplicationContext(), R.string.item_cannot_be_empty);
                 } else if (!DbUtils.isItExistingEmployee(name)) {
-                    Toast.makeText(getApplicationContext(), R.string.mo_such_employee,
-                            Toast.LENGTH_LONG).show();
+                    UiUtils.showToast(getApplicationContext(), R.string.mo_such_employee);
                 } else if (DbUtils.isItCompanyEmployee(name, innerId)) {
-                    Toast.makeText(getApplicationContext(), R.string.employee_already_here,
-                            Toast.LENGTH_LONG).show();
+                    UiUtils.showToast(getApplicationContext(), R.string.employee_already_here);
                 } else {
                     DbUtils.saveCompanyEmployee(DbUtils.getCompanyName(innerId), name);
                     showList("companies");
@@ -145,7 +141,7 @@ public class DetailsActivity extends ActionBarActivity {
 
         if (list.size() != 0) {
             UiUtils.showAlertDialog(this,
-                    "Are you sure?",
+                    R.string.are_you_sure,
                     new MyCallback() {
                         @Override
                         public void doCallback() {
@@ -167,7 +163,7 @@ public class DetailsActivity extends ActionBarActivity {
 
     private void doDeleteEmployee(final long id) {
         UiUtils.showAlertDialog(this,
-                "Are you sure?",
+                R.string.are_you_sure,
                 new MyCallback() {
             @Override
             public void doCallback() {

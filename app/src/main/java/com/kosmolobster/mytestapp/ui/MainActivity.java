@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import com.kosmolobster.mytestapp.database.DbUtils;
 import com.kosmolobster.mytestapp.R;
@@ -33,11 +32,9 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onItemAdded(String name) {
                 if (name.isEmpty()) {
-                    Toast.makeText(getApplicationContext(), R.string.item_cannot_be_empty,
-                            Toast.LENGTH_LONG).show();
+                    UiUtils.showToast(getApplicationContext(), R.string.item_cannot_be_empty);
                 } else if (DbUtils.isItExistingCompany(name)) {
-                    Toast.makeText(getApplicationContext(), R.string.company_exists,
-                            Toast.LENGTH_LONG).show();
+                    UiUtils.showToast(getApplicationContext(), R.string.company_exists);
                 } else {
                     Company company = new Company(name);
                     company.save();
