@@ -1,7 +1,5 @@
 package com.kosmolobster.mytestapp.ui;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
@@ -16,6 +14,8 @@ import com.kosmolobster.mytestapp.database.DbUtils;
 import com.kosmolobster.mytestapp.R;
 import com.kosmolobster.mytestapp.models.CompanyEmployee;
 
+import java.util.List;
+
 public class DetailsActivity extends ActionBarActivity {
     public static String KEY_TYPE = "key_type";
     public static String KEY_INNER_ID = "key_inner_id";
@@ -23,7 +23,7 @@ public class DetailsActivity extends ActionBarActivity {
     ListViewWithTopEdit list;
 
     private long innerId;
-    private String type;
+    private String listType;
     private Button destroyBtn;
     private TextView textDesc;
 
@@ -39,7 +39,7 @@ public class DetailsActivity extends ActionBarActivity {
         );
 
         innerId = getIntent().getLongExtra(KEY_INNER_ID, -1l);
-        type = getIntent().getStringExtra(KEY_TYPE);
+        listType = getIntent().getStringExtra(KEY_TYPE);
 
         list = (ListViewWithTopEdit) findViewById(R.id.list);
         destroyBtn = (Button) findViewById(R.id.destroyBtn);
@@ -72,13 +72,13 @@ public class DetailsActivity extends ActionBarActivity {
 
             @Override
             public void onListItemLongPressed(long id) {
-                if (type.equals("companies")) {
-                    showAlertDialog(id);
+                if (listType.equals("companies")) {
+                    doDeleteEmployee(id);
                 }
             }
         });
 
-        showList(type);
+        showList(listType);
     }
 
     private void showList(String type) {
@@ -141,35 +141,50 @@ public class DetailsActivity extends ActionBarActivity {
     }
 
     public void doDestroyCompany(View view) {
+        List<CompanyEmployee> list = DbUtils.getCompanyRelationList(innerId);
+
+        if (list.size() != 0) {
+            UiUtils.showAlertDialog(this,
+                    "Are you sure?",
+                    new MyCallback() {
+                        @Override
+                        public void doCallback() {
+                            deleteCompany();
+                        }
+                    },
+                    new MyCallback() {
+                        @Override
+                        public void doCallback() {
+
+                        }
+                    });
+        }
+        else {
+            deleteCompany();
+        }
+    }
+
+    public void deleteCompany() {
         DbUtils.deleteCompany(innerId);
         finish();
     }
 
-    private void doDeleteEmployee(long id) {
-        DbUtils.deleteCompanyEmployee(id);
-        list.setListData(DbUtils.getCompanyRelationCursor(innerId));
-    }
 
-    public void showAlertDialog(final long id) {
-        CompanyEmployee ce = DbUtils.getCompanyEmployee(id);
+    private void doDeleteEmployee(final long id) {
+        UiUtils.showAlertDialog(this,
+                "Are you sure?",
+                new MyCallback() {
+            @Override
+            public void doCallback() {
+                DbUtils.deleteCompanyEmployee(id);
+                list.setListData(DbUtils.getCompanyRelationCursor(innerId));
+            }
+        },
+        new MyCallback() {
+            @Override
+            public void doCallback() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Owww");
-        builder.setMessage("Do you want to delete " +
-                ce.getEmployee_name() + "?");
-
-        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                doDeleteEmployee(id);
             }
         });
-        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                //do nothing
-            }
-        });
-
-        AlertDialog alert = builder.create();
-        alert.show();
     }
 }
