@@ -152,12 +152,7 @@ public class DetailsActivity extends ActionBarActivity {
                             deleteCompany();
                         }
                     },
-                    new MyCallback() {
-                        @Override
-                        public void doCallback() {
-
-                        }
-                    });
+                    null);
         }
         else {
             deleteCompany();
@@ -180,11 +175,6 @@ public class DetailsActivity extends ActionBarActivity {
                 list.setListData(DbUtils.getCompanyRelationCursor(innerId));
             }
         },
-        new MyCallback() {
-            @Override
-            public void doCallback() {
-
-            }
-        });
+        null);
     }
 }
